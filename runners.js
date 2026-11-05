@@ -9,7 +9,15 @@ const providers = fs.readdirSync("./src", { withFileTypes: true })
   .map(d => d.name);
 
 app.get("/ping", (_req, res) => res.send("ok"));
-
+app.get("/diag", async (_req, res) => {
+  const p = providers[0];
+  try {
+    const m = await import(`./src/${p}/index.js`);
+    res.json({ provider: p, exports: Object.keys(m) });
+  } catch (e) {
+    res.json({ provider: p, error: String(e) });
+  }
+});
 app.get("/stream", async (req, res) => {
 if ((req.headers["x-token"] ?? req.query.token) !== SECRET) return res.status(401).end();
   const { tmdbId, type, season, episode } = req.query;
