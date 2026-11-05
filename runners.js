@@ -11,7 +11,7 @@ const providers = fs.readdirSync("./src", { withFileTypes: true })
 app.get("/ping", (_req, res) => res.send("ok"));
 
 app.get("/stream", async (req, res) => {
-  if (req.headers["x-token"] !== SECRET) return res.status(401).end();
+if ((req.headers["x-token"] ?? req.query.token) !== SECRET) return res.status(401).end();
   const { tmdbId, type, season, episode } = req.query;
 
   const taches = providers.map(async (p) => {
